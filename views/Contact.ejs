@@ -1,0 +1,73 @@
+<body>
+    <h1 class="mt-3">ini halaman Contact</h1>
+    <div class="conatainer ">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>Daftar contact</h2>
+                <a href="/contact/add" class="btn btn-success mb-2">Tambahkan Kontak</a>
+                <% if (msg.length !== 0) { %>
+                    <div class="alert alert-success" role="alert">
+                        <%= msg %>
+                      </div>
+                <% } %>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nama</th>
+                            <th scope="col">NoHp</th>
+                            <th scope="col">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <% if (contacts.length === 0) { %>
+                        <tr>
+                            <td colspan="4">
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                    <strong>Contact belum ada</strong> masukan data terlebih dahulu.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                  </div>
+                            </td>
+                        </tr>
+                    <% } %>     
+                    <% contacts.forEach((contact, i) => { %>    
+                        <tr>
+                        <th scope="row"><%= i+1 %></th>
+                        <td><%= contact.nama %></td>
+                        <td><%= contact.noHp %></td>
+                        <td> 
+                            <a href="/contact/<%= contact.nama %>" class="btn btn-primary mx-3 my-2 badge rounded-pill"><i
+                            class="bi bi-info-circle"></i> Details</a></td>
+                    </tr> 
+                    <% }) %>
+                    <!-- <tr>
+                        <th scope="row">1</th>
+                        <td>Muhammad Saidi</td>
+                        <td>083141597488</td>
+                        <td> <a href="" class="btn btn-primary mx-3 my-2 badge rounded-pill"> <i
+                            class="bi bi-info-circle"></i> Details</a></td>
+                    </tr> 
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Muhammad Saidi</td>
+                        <td>083141597488</td>
+                        <td> <a href="" class="btn btn-primary mx-3 my-2 badge rounded-pill"> <i
+                                    class="bi bi-info-circle"></i> Details</a> </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td colspan="1">Muhammad Saidi</td>
+                        <td>083141597488</td>
+                        <td> <a href="" class="btn btn-primary mx-3 my-2 badge rounded-pill"> 
+                            <i class="bi bi-info-circle"></i> Details</a> </td>
+                    </tr> -->
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
