@@ -20,8 +20,9 @@
                                 <%= contact.email %> <br>
                                 <%= contact.addres %>
                             </p>    
-                           
-                            <a href="/contact" class="card-link fw-medium">&laquo; kembali ke daftar contact</a>
+                            <a href="/contact/edit/<%= contact.nama %>" class="btn btn-info badge">ubah</a>
+                           <a href="/contact/delete/<%= contact.nama %>" class="btn btn-danger badge" onclick="return confirm('yakin ?');">delete</a>
+                            <a href="/contact" class="card-link fw-medium d-block mt-3">&laquo; kembali ke daftar contact</a>
                         </div>
                         <% } %>
                     </div>

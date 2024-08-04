@@ -19,6 +19,7 @@ const loadContact = () => {
     const file = fs.readFileSync('data/contacts.json','utf-8');
     const contact = JSON.parse(file )
     return contact;
+    
 }
 
 // cari contact di Contact.json berdasarakan nama
@@ -36,6 +37,7 @@ const saveContacts = (contact) => {
 
 // menambahkan data Contact baru 
 const addContact = (contact) => {
+    contact.nama.trim();
     const contacts = loadContact();
     contacts.push(contact);
     saveContacts(contacts)
@@ -48,5 +50,32 @@ const cekDuplikat = (nama) => {
 };
 
 
+ const deleteContact = (nama) => {
+    const contacts = loadContact();
+    const filteredContacts = contacts.filter((contact) => contact.nama !== nama);
 
-module.exports = { loadContact, findContact, addContact, cekDuplikat };
+    saveContacts(filteredContacts);
+    // console.log(filteredContacts)
+ }
+
+
+
+//  mengubah kontak 
+const updateContact = (contactBaru) =>{
+    const contacts = loadContact();
+    // hilangkan kontak nama yang namanya sama denagan anam lama
+    const filteredContacts = contacts.filter((contact) => contact.nama !== 
+    contactBaru.oldNama);
+
+    // hapus Obeject oldBaru;
+    delete contactBaru.oldNama;
+    // console.log(filteredContacts, contactBaru);
+    // masukan ke contact baru
+    filteredContacts.push(contactBaru);
+    // timpa ke kontak
+    saveContacts(filteredContacts); 
+
+}
+
+
+module.exports = { loadContact, findContact, addContact, cekDuplikat, deleteContact,  updateContact };

@@ -9,7 +9,7 @@ const flast = require('connect-flash');
 
 
 //expres validaator for validasi form 
-const { query, validationResult, body, check, cookie} = require('express-validator');
+const { validationResult, body, check, } = require('express-validator');
 
 
 // using expressLayout 
@@ -17,8 +17,8 @@ const expressLayout = require('express-ejs-layouts')
 app.use(expressLayout)
 
 
-// import loadContact
-const { loadContact, findContact, addContact, cekDuplikat } = require('./utils/contact');
+// import loadContact from Contact
+const { loadContact, findContact, addContact, cekDuplikat, deleteContact, updateContact } = require('./utils/contact');
 
 
 
@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 // parsing aplication
 app.use(express.urlencoded({extended:true}));
 
-// konfigurasi flat
+// konfigurasi flast
 app.use(cookieparser('secret'));
 app.use(session({
     cookie: {maxAge: 6000},
@@ -38,10 +38,11 @@ app.use(session({
     saveUninitialized: true,
 }
 ))
+// Gunakan sesion flast massage
 app.use(flast());
 
 
-
+// layout ke halaman utama
 app.get('/home', (req, res) => {
     res.render('home',{titel: 'halaman Home',
         layout:'layouts/mainlayout', 
@@ -49,14 +50,14 @@ app.get('/home', (req, res) => {
 });
 
 
-
+// layout ke halaman about
 app.get('/about',(req, res) => {
     res.render('about',{
         layout: 'layouts/mainlayout',
         titel: 'halaman about '})
 })
 
-
+// layout ke halaman conatact
 app.get('/contact',(req, res) => {
     // Load data from contact apps
     const contacts = loadContact()
@@ -98,7 +99,7 @@ app.post('/contact',
     if (!errors.isEmpty()) {
         return res.render('add-contact',{
             layout: 'layouts/mainlayout',
-            titel: 'halaman contact',
+            titel: 'halaman ubah contact',
             errors: errors.array()
         })
     } else {
@@ -108,6 +109,77 @@ app.post('/contact',
         res.redirect('/contact')
     }
 })
+
+
+//proses delete contact
+app.get('/contact/delete/:nama', (req, res) => {
+    const contact = findContact(req.params.nama)
+
+    // jika kontak tidak ada 
+    if (!contact){
+        res.status(404);
+        res.send('<h1>404<h1>',)
+    } else {
+        deleteContact(req.params.nama);
+        req.flash('msg', 'Data Kontak berhasil dihapus!');
+        res.redirect('/contact')
+    }
+})
+
+
+
+// form ubah data contact
+app.get('/contact/edit/:nama',(req, res) => {
+    const contact = findContact(req.params.nama);
+    res.render('edit-contact',{
+        layout: 'layouts/mainlayout',
+        titel: 'form ubah data contact',
+        contact
+    })
+});
+
+
+// proses ubah data contact
+// app.post('/contact/update', (req, res) => {
+//     res.send(req.body)
+// });
+
+
+//layout update contact 
+app.post('/contact/update',
+    [body('nama').custom((value, {req}) => {
+        const duplikat = cekDuplikat(value);
+        if(value !== req.body.oldNama && duplikat) {
+                    throw new Error('Nama kontak sudah terdaftar !');
+                }
+                return true;
+    }),
+    check('email','Email tidak valid !').isEmail(),
+    check('noHp','noHp tidak valid !').isMobilePhone('id-ID'),
+]
+,(req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+         return res.render('edit-contact',{
+            layout: 'layouts/mainlayout',
+            titel: 'form ubah data contact',
+            errors: errors.array(),
+            contact: req.body,
+
+        })
+    } else {
+        // res.send(req.body);
+
+        updateContact(req.body);
+        // kirimkan flast massage
+        req.flash('msg', 'Data Kontak berhasil diubah');
+        res.redirect('/contact')
+    }
+})
+
+
+
+
 
 // halaman detail Contact
 // fitur detail contact dengan faram
@@ -123,8 +195,10 @@ app.get('/contact/:nama',(req, res) => {
     })
 })
 
+// halaman hapus kontak next fitur
 
 
+// fitur kacau Bugg disini
 app.get('/',(req, res) => {
     res.render('tes',{
         layout: 'layouts/mainlayout',
@@ -135,12 +209,12 @@ app.get('/',(req, res) => {
 
 // Add midlreware not found 404
 // belum di implemntasikan
- app.get('*',(req, res) => {
-    res.render('404',{
-        layout: 'layouts/mainlayout',
-        titel: 'Not found'
-    })
- })
+//  app.get('*',(req, res) => {
+//     res.render('404',{
+//         layout: 'layouts/mainlayout',
+//         titel: 'Not found'
+//     })
+//  })
 
 app.listen(port, () => {
     console.log(`EJS Running at http://localhost:${port}`);

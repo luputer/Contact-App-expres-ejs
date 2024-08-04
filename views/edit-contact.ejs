@@ -1,0 +1,44 @@
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>From Ubah data Contact</h2>
+            <% if (typeof errors !='undefined' ) { %>
+                <div class="alert alert-danger" role="alert">
+                    <ul>
+                        <% errors.forEach(error=> { %>
+                            <li>
+                                <%= error.msg %>
+                            </li>
+                            <% }) %>
+                    </ul>
+                </div>
+                <% } %>
+
+                    <form method="post" action="/contact/update">
+                        <input type="hidden" name="oldNama" value="<%= contact.oldNama || contact.nama %>">
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Masukan Nama Anda</label>
+                            <input type="text" class="form-control" id="nama" name="nama" placeholder="Your Name"
+                                required value="<%= contact.nama %>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Masukan Email Anda</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                placeholder="example@gmail.com" required value="<%= contact.email %>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="noHp" class="form-label">Masukan nohp</label>
+                            <input type="text" inputmode="numeric" class="form-control" id="noHp" name="noHp"
+                                placeholder="Your Number" required value="<%= contact.noHp %>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="addres" class="addres">Masukan alamat</label>
+                            <input type="text" class="form-control" id="addres" name="addres" placeholder="Your Address"
+                                required value="<%= contact.addres %>">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Ubah data kontak</button>
+                        <a href="/contact" class="btn btn-dark mx-2">kembali</a>
+                    </form>
+        </div>
+    </div>
+</div>
